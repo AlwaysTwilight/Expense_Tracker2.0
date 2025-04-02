@@ -41,17 +41,7 @@ A responsive, feature-rich personal expense tracking application built with mode
 
 Alternatively, you can access the live demo [here](expensetracker-seven-alpha.vercel.app).
 
-## 📂 Project Structure
 
-```
-personal-expense-tracker/
-├── index.html            # Main HTML file
-├── app.js                # Application JavaScript
-├── styles.css            # Custom CSS styles
-├── README.md             # Project documentation
-├── USER_GUIDE.md         # User guide documentation
-└── screenshots/          # Application screenshots
-```
 
 ## 💻 Usage
 
