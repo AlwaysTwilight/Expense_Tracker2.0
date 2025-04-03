@@ -1,230 +1,459 @@
-# Personal Expense Tracker - User Guide
+# Expense Tracker - User Guide
 
-## 📚 Table of Contents
+This comprehensive guide will help you make the most of your Expense Tracker application. Learn how to track expenses, manage budgets, analyze spending patterns, and customize the application to fit your personal financial needs.
 
-1. [Introduction](#introduction)
-2. [Getting Started](#getting-started)
-3. [The Dashboard](#the-dashboard)
-4. [Managing Expenses](#managing-expenses)
-5. [Budget Management](#budget-management)
-6. [Analysis and Reports](#analysis-and-reports)
-7. [Settings and Customization](#settings-and-customization)
-8. [Data Management](#data-management)
-9. [Tips and Best Practices](#tips-and-best-practices)
+## Table of Contents
 
-## Introduction
-
-Personal Expense Tracker is a web-based application designed to help you manage your finances, track expenses, set budgets, and analyze your spending habits. The application is entirely client-side, with all data stored in your browser's local storage for privacy.
+1. [Getting Started](#getting-started)
+   - [Registration & Login](#registration--login)
+   - [User Profile Setup](#user-profile-setup)
+2. [Dashboard Overview](#dashboard-overview)
+   - [Key Metrics](#key-metrics)
+   - [Payment Method Cards](#payment-method-cards)
+   - [Today's Expenses](#todays-expenses)
+   - [Recent Transactions](#recent-transactions)
+   - [Visual Charts](#visual-charts)
+3. [Managing Expenses](#managing-expenses)
+   - [Food Expenses](#food-expenses)
+   - [Bill Payments](#bill-payments)
+   - [Miscellaneous Expenses](#miscellaneous-expenses)
+   - [Viewing & Searching Expenses](#viewing--searching-expenses)
+4. [Budget Management](#budget-management)
+   - [Setting Monthly Budget](#setting-monthly-budget)
+   - [Saving Goals](#saving-goals)
+   - [Bill Payment Tracking](#bill-payment-tracking)
+   - [Budget History](#budget-history)
+5. [Data Analysis](#data-analysis)
+   - [Date Range Analysis](#date-range-analysis)
+   - [Category & Subcategory Analysis](#category--subcategory-analysis)
+   - [Payment Method Analysis](#payment-method-analysis)
+   - [Food Analysis](#food-analysis)
+   - [Exporting Reports](#exporting-reports)
+6. [Settings & Customization](#settings--customization)
+   - [Theme & Display Settings](#theme--display-settings)
+   - [Default Values](#default-values)
+   - [Feature Toggles](#feature-toggles)
+7. [Data Management](#data-management)
+   - [Exporting Data](#exporting-data)
+   - [Importing Data](#importing-data)
+   - [Resetting Application](#resetting-application)
+8. [Troubleshooting](#troubleshooting)
+   - [Common Issues](#common-issues)
+   - [Error Messages](#error-messages)
+   - [Support Resources](#support-resources)
 
 ## Getting Started
 
-### First-Time Setup
+### Registration & Login
 
-1. **Open the application** by navigating to `index.html` in your web browser.
+1. **Registration Process**:
+   - Navigate to the login page
+   - Click on "Register" to create a new account
+   - Enter your name, email, username, phone number, and password
+   - Click "Register" to create your account
 
-2. **Configure your default settings**:
-   - Click on the "Settings" tab in the navigation bar
-   - Set your preferred currency, date format, and theme
-   - Configure default values for monthly budget, rent, SIP, and other recurring expenses
-   - Save your settings
+2. **Login**:
+   - Enter your email/username and password
+   - Click "Login" to access your account
+   - You can use the "Remember me" option to stay logged in on trusted devices
 
-3. **Set your monthly budget**:
-   - Navigate to the "Budget" page
-   - Enter your initial cash and bank balances for the current month
-   - Set a savings goal if desired
-   - Update the budget
+3. **Password Recovery**:
+   - Use the "Forgot Password" link if you can't remember your password
+   - Enter your email address to receive a password reset link
+   - Follow the instructions in the email to reset your password
 
-After completing these steps, your application is ready to use.
+### User Profile Setup
 
-## The Dashboard
+1. **Accessing Profile Settings**:
+   - Click on your username in the top-right corner
+   - Select "Profile" from the dropdown menu
 
-The Dashboard provides a quick overview of your financial status for the current month.
+2. **Updating Profile Information**:
+   - Modify your name, email, or phone number
+   - Click "Update Profile" to save changes
 
-### Key Components
+3. **Changing Password**:
+   - In the Profile section, locate the "Change Password" form
+   - Enter your new password and confirm it
+   - Click "Change Password" to update
 
-1. **Budget Status**: Shows your remaining budget, daily allowance, and budget usage percentage.
+## Dashboard Overview
 
-2. **Payment Methods Status**: Displays your current cash balance, bank (UPI) balance, and credit card availability.
+### Key Metrics
 
-3. **Recent Transactions**: Lists your 5 most recent expenses.
+The dashboard displays several important financial metrics:
 
-4. **Expense Charts**: Visual representation of your spending by category and daily expense trends.
+1. **Budget Overview**:
+   - **Remaining Budget**: Amount left to spend this month
+   - **Daily Allowance**: Suggested daily spending limit
+   - **Days Left**: Number of days remaining in the current month
+   - **Budget Used**: Percentage of total budget used
 
-### Savings Alerts
+2. **Budget Progress Bar**:
+   - Visual representation of your budget usage
+   - Changes color based on percentage used (green, yellow, red)
 
-- If you've set a savings goal, an info alert will appear showing how much you're saving.
-- If your expenses exceed your budget (excluding savings), a warning alert will appear indicating that you're now using your savings.
+3. **Savings Status**:
+   - If you've set a savings goal, you'll see information about your progress
+   - Warnings appear if you start using your savings allocation
+
+### Payment Method Cards
+
+The dashboard shows three payment method cards:
+
+1. **Cash Balance**:
+   - Current cash balance remaining
+   - Amount used so far
+
+2. **Bank/UPI Balance**:
+   - Current bank balance remaining
+   - Amount used via UPI or bank transfers
+
+3. **Credit Card**:
+   - Available credit limit
+   - Amount used on credit card
+
+### Today's Expenses
+
+1. **Quick Summary**:
+   - Total amount spent today
+   - "View Details" link for more information
+
+2. **Today's Expenses Modal**:
+   - Detailed breakdown by category
+   - List of all transactions made today
+   - Pie chart showing category distribution
+
+### Recent Transactions
+
+A table showing your 5 most recent expenses with:
+- Date
+- Category/Subcategory
+- Amount
+
+### Visual Charts
+
+1. **Expense by Category**:
+   - Doughnut chart showing distribution of expenses by category
+
+2. **Monthly Spending Trend**:
+   - Line chart showing daily expenses throughout the month
 
 ## Managing Expenses
 
-### Adding Expenses
+### Food Expenses
 
-1. Navigate to the "Expenses" tab.
-
-2. Choose the expense type:
-   - **Food**: For food-related expenses (groceries, dining, etc.)
-   - **Miscellaneous**: For various other expenses (entertainment, clothes, etc.)
-   - **Bills**: For recurring bills and payments
-
-3. For Food expenses:
-   - Select the food source (Zomato, Swiggy, Local, etc.)
-   - Enter the prices in the text area (one per line)
-   - Add a description if needed
+1. **Adding Food Expense**:
+   - Go to "Expenses" page and select the "Food" tab
+   - Select food source (Restaurant, Groceries, Quick Commerce, etc.)
+   - Enter individual food items and amounts in the list (one per line)
+   - Add description if needed
+   - Select payment method
    - Click "Add Food Expense"
 
-4. For Miscellaneous expenses:
-   - Enter the amount
-   - Select the expense tag or create a custom tag
-   - Add description and notes
-   - Click "Add Expense"
-   - After adding multiple expenses, click "Save All Expenses"
+2. **Food Sources Available**:
+   - Restaurant
+   - Home Delivery
+   - Groceries
+   - Street Food
+   - Quick Commerce
+   - Other Food Items
 
-5. For Bills:
-   - If you've already paid a bill, toggle the "Already Paid" switch
-   - Otherwise, enter the amount, select the payment method, and add the bill
+### Bill Payments
 
-### Viewing and Searching Expenses
+1. **Managing Bills**:
+   - Go to "Expenses" page and select the "Bills" tab
+   - Each bill type has its own card
 
-- All expenses are listed in the "All Expenses" table at the bottom of the Expenses page
-- Use the search box to filter expenses by any attribute (date, category, amount, etc.)
+2. **Available Bill Types**:
+   - Credit Card
+   - Electricity
+   - Water Bill
+   - Laundry
+   - SIP (Systematic Investment Plan)
+   - Rent
 
-### Deleting Expenses
+3. **Adding Bill Payment**:
+   - For each bill, you can either:
+     - Toggle "Already Paid" if you paid it outside the app
+     - Enter amount and payment method, then click "Add" to record payment
 
-1. Locate the expense in the "All Expenses" table
-2. Click the trash icon in the Actions column
-3. Confirm deletion in the popup dialog
+4. **Bill Status Tracking**:
+   - The app tracks which bills have been paid each month
+   - Paid bills will show as disabled with the toggle switched on
+
+### Miscellaneous Expenses
+
+1. **Quick Add Misc Expense**:
+   - Go to "Expenses" page and select the "Misc" tab
+   - Enter amount
+   - Select category tag
+   - Enter description and notes
+   - Select payment method
+   - Click "Add to List"
+
+2. **Multiple Expenses Mode**:
+   - Add multiple expenses to a list before saving
+   - Review all items in the table
+   - Click "Save All" to record all expenses at once
+
+3. **Custom Tags**:
+   - Select "Others" from the tag dropdown to create custom tags
+   - Enter your custom tag name
+
+### Viewing & Searching Expenses
+
+1. **All Expenses Table**:
+   - View all expenses in a sortable table
+   - Columns include date, category, subcategory, amount, description, and payment method
+
+2. **Search Functionality**:
+   - Use the search box to filter expenses
+   - Search works across all fields (date, category, amount, etc.)
+
+3. **Deleting Expenses**:
+   - Click the trash icon next to any expense
+   - Confirm deletion in the popup dialog
 
 ## Budget Management
 
-The Budget page allows you to manage your monthly budgets and savings goals.
+### Setting Monthly Budget
 
-### Setting Your Monthly Budget
+1. **Accessing Budget Page**:
+   - Navigate to the "Budget" page from the sidebar
 
-1. Select the month and year
-2. Enter your initial cash and bank balances
-   - The monthly budget will automatically calculate as Cash + Bank
-3. Set a monthly savings goal (optional)
-4. Configure credit card limit and previous month's balance if applicable
-5. Click "Update Budget"
+2. **Selecting Month and Year**:
+   - Choose the month and year you want to budget for
+   - The form will load existing budget data if available
 
-### Savings Goals
+3. **Setting Initial Balances**:
+   - Enter your initial cash balance
+   - Enter your initial bank balance
+   - The monthly budget will automatically calculate as the sum of these values
 
-At the start of each month, you'll be prompted to set a savings goal:
+4. **Credit Card Configuration**:
+   - Set your credit card limit
+   - Enter any previous month's credit carried forward
 
-1. Toggle the "Set savings goal" switch
-2. Enter the amount you want to save this month
-3. Click "Update Savings Goal"
+### Saving Goals
 
-This amount will be reserved from your total budget.
+1. **Setting Savings Goal**:
+   - In the dashboard, locate the "Savings Goal" section
+   - Toggle "Set Savings Goal" to enable
+   - Enter your target savings amount
+   - Click "Update Savings Goal"
+
+2. **Savings Monitoring**:
+   - The dashboard will show your savings progress
+   - Alerts will display if you start using your savings allocation
+
+### Bill Payment Tracking
+
+1. **Bill Status in Budget**:
+   - The budget page shows which bills have been paid for the month
+   - You can view historical bill payment patterns
+
+2. **Default Bill Values**:
+   - Set default values for recurring bills in Settings
+   - These values will be used as defaults each month
 
 ### Budget History
 
-The Budget page also displays a history of your past budgets, showing:
-- Total budget for each month
-- Total expenses
-- Actual savings
-- Savings goal status (whether you met your goal)
+1. **Viewing Past Budgets**:
+   - Scroll down on the Budget page to see "Budget History"
+   - See a table of all past months with budget vs. actual spending
 
-## Analysis and Reports
+2. **Budget History Chart**:
+   - Bar chart comparing budget, expenses, and savings across months
+   - Helps identify trends in your budgeting effectiveness
 
-The Analysis page provides detailed insights into your spending habits.
+## Data Analysis
 
-### Filtering Options
+### Date Range Analysis
 
-1. **Date Range**: Select from preset ranges or specify a custom date range
-2. **Categories**: Filter by expense categories
-3. **Payment Methods**: Filter by payment method
-4. **Amount Range**: Filter by expense amount
-5. **Description Search**: Search within expense descriptions
+1. **Selecting Date Range**:
+   - Go to the "Analysis" page
+   - Choose a date range (This Month, Last Month, Last 30 Days, etc.)
+   - For custom ranges, select "Custom" and enter start/end dates
 
-### Available Reports
+2. **Summary Statistics**:
+   - Total expenses for the period
+   - Average daily expense
+   - Number of transactions
+   - Highest expense amount and category
 
-1. **Summary Statistics**: Total expenses, average daily expense, highest expense, etc.
-2. **Category Analysis**: Distribution of expenses across categories
-3. **Subcategory Analysis**: Breakdown of top spending subcategories
-4. **Trend Analysis**: Daily expense pattern over time
-5. **Weekly Pattern**: Spending distribution by day of week
-6. **Payment Method Analysis**: Breakdown of expenses by payment method
-7. **Food Analysis**: Detailed food expense analysis (only visible if you have food expenses)
+### Category & Subcategory Analysis
 
-### Downloading Reports
+1. **Category Distribution**:
+   - Doughnut chart showing expenses by category
+   - Percentage breakdown of each category
 
-Click the "Download CSV" or "Download PDF" button to export your analysis for record-keeping or further examination.
+2. **Top Subcategories**:
+   - Doughnut chart showing top subcategories by amount
+   - Helps identify specific spending hotspots
 
-## Settings and Customization
+3. **Daily Trend Chart**:
+   - Line chart showing daily expenses over the selected period
+   - Identify high-spending days
+
+4. **Weekly Pattern Chart**:
+   - Bar chart showing expenses by day of the week
+   - Identify spending patterns by weekday vs weekend
+
+### Payment Method Analysis
+
+1. **Payment Method Distribution**:
+   - Pie chart showing distribution across payment methods
+   - Table with detailed breakdown
+
+2. **Payment Method Filtering**:
+   - Filter analysis by specific payment methods
+   - Compare usage patterns across different methods
+
+### Food Analysis
+
+If you have food expenses in the selected period, a special Food Analysis section appears:
+
+1. **Food Metrics**:
+   - Total food expenses
+   - Percentage of total budget
+   - Average food expense
+
+2. **Food Sources Breakdown**:
+   - Pie chart showing distribution across food sources
+   - Table with amount and percentage for each source
+
+### Exporting Reports
+
+1. **Download Options**:
+   - Click "Download Report" 
+   - Choose format: CSV or PDF
+
+2. **CSV Export**:
+   - Detailed breakdown in spreadsheet format
+   - Includes raw data and summary statistics
+
+3. **PDF Export**:
+   - Visual report with charts and tables
+   - Professional format for sharing or printing
+
+## Settings & Customization
+
+### Theme & Display Settings
+
+1. **Theme Selection**:
+   - Choose between Light, Dark, or Blue themes
+   - Changes the overall appearance of the application
+
+2. **Currency Format**:
+   - Select your preferred currency symbol
+   - Applies throughout the application
+
+3. **Date Format**:
+   - Choose between DD/MM/YYYY, MM/DD/YYYY, or YYYY-MM-DD
+   - Used for all date displays
+
+4. **Items Per Page**:
+   - Set how many items appear in tables before pagination
 
 ### Default Values
 
-Configure default values for:
-- SIP amount
-- Rent amount
-- Credit card limit
-- Preferred payment method
-- Default cash and bank balances
-- Default savings goal
+1. **Payment Defaults**:
+   - Default SIP amount
+   - Default Rent amount
+   - Default Credit Limit
+   - Default Payment Method
 
-### Display Settings
+2. **Balance Defaults**:
+   - Default Cash Balance
+   - Default Bank Balance
+   - Default Savings Goal
 
-Customize:
-- Theme (Light, Dark, or Blue)
-- Currency symbol
-- Date format
-- Number of items to display per page
+### Feature Toggles
 
-### Credit Card Settings
+1. **Credit Card Tracking**:
+   - Enable/disable credit card features
+   - When disabled, credit card options will be hidden
 
-You can enable or disable credit card functionality based on your preferences.
+2. **SIP Tracking**:
+   - Enable/disable SIP (Systematic Investment Plan) tracking
+   - When disabled, SIP will be marked as paid automatically
 
 ## Data Management
 
 ### Exporting Data
 
-1. Navigate to the Settings page
-2. Click "Export Data" in the Data Management section
-3. Save the JSON file to your device
+1. **Full Data Export**:
+   - Go to Settings > Data Management
+   - Click "Export Data"
+   - A JSON file containing all your data will be downloaded
+
+2. **Export Use Cases**:
+   - Creating backups
+   - Transferring to another device
+   - Data analysis in external tools
 
 ### Importing Data
 
-1. Navigate to the Settings page
-2. Click "Choose File" and select your previously exported JSON file
-3. Click "Import"
+1. **Import Process**:
+   - Go to Settings > Data Management
+   - Click "Choose File" and select your exported JSON file
+   - Click "Import Data"
+   - Your data will be restored from the file
+
+2. **Import Behavior**:
+   - Existing data will be replaced with imported data
+   - Settings will be updated if included in the import file
 
 ### Resetting Application
 
-If you need to start fresh:
-1. Navigate to the Settings page
-2. Click "Reset Application"
-3. Confirm by checking the confirmation box and clicking "Reset Application"
+1. **Reset Process**:
+   - Go to Settings > Data Management
+   - Check the confirmation box "I understand this will delete all my data"
+   - Click "Reset Application"
 
-⚠️ **WARNING**: This will delete all your data permanently. Make sure to export your data first if you want to keep it.
+2. **Reset Effects**:
+   - All expenses and budgets will be deleted
+   - Settings will be reset to defaults
+   - Cannot be undone (export your data first if needed)
 
-## Tips and Best Practices
+## Troubleshooting
 
-### Effective Budget Management
+### Common Issues
 
-1. **Set realistic budgets**: Start with your actual spending patterns and gradually adjust as needed.
+1. **Missing Data**:
+   - Ensure you're logged in with the correct account
+   - Check if you've accidentally filtered out data
+   - Try refreshing the page
 
-2. **Save first, spend later**: Set a savings goal at the beginning of the month and treat it as a non-negotiable expense.
+2. **Budget Discrepancies**:
+   - Verify all expenses are categorized correctly
+   - Check for duplicate expenses
+   - Ensure initial balances are set correctly
 
-3. **Use the daily allowance feature**: Check your daily allowance on the dashboard to pace your spending throughout the month.
+3. **Chart Display Issues**:
+   - Try changing browser or device
+   - Clear browser cache
+   - Ensure JavaScript is enabled
 
-### Expense Tracking Habits
+### Error Messages
 
-1. **Track expenses immediately**: Add expenses as soon as they occur for greater accuracy.
+1. **Authentication Errors**:
+   - "Session expired" - Log in again
+   - "Invalid credentials" - Check username/password
 
-2. **Categorize properly**: Use consistent categories to get meaningful analysis.
+2. **Data Errors**:
+   - "Error saving data" - Check internet connection
+   - "Invalid amount" - Ensure numbers are formatted correctly
 
-3. **Add descriptions**: Provide descriptive notes for unusual expenses to help with future reference.
+3. **Import/Export Errors**:
+   - "Invalid file format" - Ensure file is valid JSON
+   - "Error importing data" - Check file permissions
 
-### Data Management
+### Support Resources
 
-1. **Export regularly**: Back up your data at least once a month.
+If you encounter persistent issues:
 
-2. **Check your data**: Review the Analysis page periodically to identify spending patterns and areas for improvement.
-
-
-### Browser Compatibility
-
-For the best experience, use the latest version of Chrome, Firefox, Safari, or Edge. The application may not function correctly on older browsers or browsers with restricted JavaScript or local storage functionality.
-
----
+1. Check the official documentation
+2. Look for updates to the application
+3. Contact support with details about your issue
