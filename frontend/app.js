@@ -1757,30 +1757,32 @@ class ExpenseTracker {
 
     async addExpenseToMongoDB(expense) {
         try {
-          const response = await this.fetchWithAuth(`${API_URL}/expenses`, {
-            method: 'POST',
-            body: JSON.stringify(expense)
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const savedExpense = await response.json();
-          
-          // Update the local expenses array with the saved expense
-          // Convert the date back to a Date object
-          savedExpense.Date = new Date(savedExpense.Date);
-          
-          // Add to the beginning of the array to keep newest expenses first
-          this.expenses.push(savedExpense);
-          
-          return savedExpense;
+            const response = await fetch(`${API_URL}/expenses`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(expense)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const savedExpense = await response.json();
+            
+            // Convert the date back to a Date object
+            savedExpense.Date = new Date(savedExpense.Date);
+            
+            // Add to the expenses array
+            this.expenses.push(savedExpense);
+            
+            return savedExpense;
         } catch (error) {
-          console.error('Error adding expense to MongoDB:', error);
-          throw error;
+            console.error('Error adding expense to MongoDB:', error);
+            throw error;
         }
-      }
+    }
 
     setupTodayExpensesModal() {
         try {
@@ -2062,6 +2064,7 @@ class ExpenseTracker {
             };
         }
     }
+
     
     // Calculate metrics for each payment method
     calculatePaymentMethodMetrics(month, year) {
