@@ -2790,7 +2790,25 @@ class ExpenseTracker {
                     amountElementId = 'electricityBillAmount';
                     descriptionText = 'Monthly electricity bill';
                     break;
-                // Other cases...
+                case 'Water Bill':
+                    amountElementId = 'waterBillAmount';
+                    descriptionText = 'Monthly water bill';
+                    break;
+                case 'Laundry':
+                    amountElementId = 'laundryAmount';
+                    descriptionText = 'Monthly laundry expense';
+                    category = 'Services';
+                    break;
+                case 'SIP':
+                    amountElementId = 'sipAmount';
+                    descriptionText = 'Monthly SIP payment';
+                    break;
+                case 'Rent':
+                    amountElementId = 'rentAmount';
+                    descriptionText = 'Monthly rent payment';
+                    break;
+                default:
+                    return;
             }
             
             // Check if "Already Paid" is toggled on
@@ -2811,16 +2829,54 @@ class ExpenseTracker {
                 const year = date.getFullYear();
                 
                 await this.updateBillPaymentStatus(billType, true, 0, month, year);
-                await this.saveData();
                 
-                // Rest of the method...
+                // Disable the form
+                const formId = billType === 'SIP' ? 'sip' : 
+                            billType === 'Rent' ? 'rent' :
+                            billType === 'Laundry' ? 'laundry' : 
+                            billType === 'Water Bill' ? 'waterBill' : 
+                            billType.toLowerCase().replace(' ', '') + 'Bill';
+                            
+                this.toggleBillPaymentForm(formId, true);
+                
+                this.showToast(`Marked ${billType} as already paid.`, 'success');
+                
+                // Update UI if necessary
+                if (this.currentPage === 'dashboard') {
+                    this.updateDashboard();
+                }
+                
                 return;
             }
             
-            // Get form values
             const amountInput = document.getElementById(amountElementId);
             const dateInput = document.getElementById('expenseDate');
-            // Rest of the method...
+            
+            // Get the payment method from the corresponding dropdown
+            const formId = billType === 'SIP' ? 'sip' : 
+                        billType === 'Rent' ? 'rent' :
+                        billType === 'Laundry' ? 'laundry' : 
+                        billType === 'Water Bill' ? 'waterBill' : 
+                        billType.toLowerCase().replace(' ', '') + 'Bill';
+                        
+            const methodSelect = document.getElementById(`${formId}PaymentMethod`);
+            const paymentMethod = methodSelect ? methodSelect.value : 'UPI';
+            
+            if (!amountInput || !dateInput) {
+                this.showToast('Some form elements are missing.', 'error');
+                return;
+            }
+            
+            const amount = parseFloat(amountInput.value) || 0;
+            
+            if (amount <= 0) {
+                this.showToast(`Please enter a valid ${billType} amount.`, 'warning');
+                return;
+            }
+            
+            const date = new Date(dateInput.value);
+            const month = date.toLocaleString('default', { month: 'long' });
+            const year = date.getFullYear();
             
             // Create new expense
             const newExpense = {
@@ -2834,16 +2890,49 @@ class ExpenseTracker {
                 PaymentMethod: paymentMethod
             };
             
-            // Add to MongoDB
+            // Add to MongoDB and expenses array
             await this.addExpenseToMongoDB(newExpense);
             
             // Update balance based on payment method
             await this.updateBalanceForExpense(amount, paymentMethod, date);
             
             // Update budget data for bill payment status
+            // For SIP and Rent, also update the amount in the budget to maintain
+            // the custom amount for the month
+            if (billType === 'SIP' || billType === 'Rent') {
+                let monthBudget = this.getMonthBudget(month, year);
+                if (monthBudget) {
+                    if (billType === 'SIP') {
+                        monthBudget.SIP = amount;
+                    } else if (billType === 'Rent') {
+                        monthBudget.Rent = amount;
+                    }
+                }
+            }
+            
             await this.updateBillPaymentStatus(billType, true, amount, month, year);
             
-            // Rest of the method...
+            // Reset form
+            amountInput.value = '';
+            
+            this.showToast(`Added ${billType} of ${this.settings.currency}${amount.toFixed(2)}!`, 'success');
+            
+            // Update UI
+            this.updateExpensesTable();
+            if (this.currentPage === 'dashboard') {
+                this.updateDashboard();
+            }
+            
+            // Disable the form
+            this.toggleBillPaymentForm(formId, true);
+            
+            // Update checkbox - this should fix the credit card not marking as paid
+            if (paidCheckbox) {
+                paidCheckbox.checked = true;
+            }
+            
+            // Make sure the bill payment status is reflected in the UI
+            this.updateBillPaymentStatus();
         } catch (error) {
             console.error('Error adding bill expense:', error);
             this.showToast('Error adding bill expense.', 'error');
@@ -2858,8 +2947,70 @@ class ExpenseTracker {
                 const monthBudget = this.getMonthBudget(this.currentMonth, this.currentYear);
                 
                 if (monthBudget) {
-                    // Update UI based on budget data
-                    // No changes needed for this part as it only affects the UI
+                    // Credit Card
+                    const creditCardBillPaid = document.getElementById('creditCardBillPaid');
+                    if (creditCardBillPaid && monthBudget.CreditCardPaid) {
+                        creditCardBillPaid.checked = true;
+                        this.toggleBillPaymentForm('creditCardBill', true);
+                    }
+                    
+                    // Electricity
+                    const electricityBillPaid = document.getElementById('electricityBillPaid');
+                    if (electricityBillPaid && monthBudget.ElectricityPaid) {
+                        electricityBillPaid.checked = true;
+                        this.toggleBillPaymentForm('electricityBill', true);
+                    }
+                    
+                    // Water Bill
+                    const waterBillPaid = document.getElementById('waterBillPaid');
+                    if (waterBillPaid && monthBudget.WaterBillPaid) {
+                        waterBillPaid.checked = true;
+                        this.toggleBillPaymentForm('waterBill', true);
+                    }
+                    
+                    // Laundry
+                    const laundryPaid = document.getElementById('laundryPaid');
+                    if (laundryPaid && monthBudget.LaundryPaid) {
+                        laundryPaid.checked = true;
+                        this.toggleBillPaymentForm('laundry', true);
+                    }
+                    
+                    // SIP
+                    const sipPaid = document.getElementById('sipPaid');
+                    if (sipPaid && monthBudget.SIPPaid) {
+                        sipPaid.checked = true;
+                        this.toggleBillPaymentForm('sip', true);
+                    } else {
+                        // Set SIP amount from budget if not paid
+                        const sipAmountInput = document.getElementById('sipAmount');
+                        if (sipAmountInput) {
+                            sipAmountInput.value = monthBudget.SIP || this.settings.defaultSIP;
+                        }
+                    }
+                    
+                    // Rent
+                    const rentPaid = document.getElementById('rentPaid');
+                    if (rentPaid && monthBudget.RentPaid) {
+                        rentPaid.checked = true;
+                        this.toggleBillPaymentForm('rent', true);
+                    } else {
+                        // Set Rent amount from budget if not paid
+                        const rentAmountInput = document.getElementById('rentAmount');
+                        if (rentAmountInput) {
+                            rentAmountInput.value = monthBudget.Rent || this.settings.defaultRent;
+                        }
+                    }
+                } else {
+                    // No budget found, so set default values from settings
+                    const sipAmountInput = document.getElementById('sipAmount');
+                    if (sipAmountInput) {
+                        sipAmountInput.value = this.settings.defaultSIP;
+                    }
+                    
+                    const rentAmountInput = document.getElementById('rentAmount');
+                    if (rentAmountInput) {
+                        rentAmountInput.value = this.settings.defaultRent;
+                    }
                 }
                 return;
             }
@@ -2875,7 +3026,24 @@ class ExpenseTracker {
                 monthBudget = {
                     Month: month,
                     Year: year,
-                    // Default values...
+                    TotalBudget: this.settings.defaultCashBalance + this.settings.defaultBankBalance,
+                    SIP: this.settings.defaultSIP,
+                    Rent: this.settings.defaultRent,
+                    CreditCard: 0,
+                    Electricity: 0,
+                    WaterBill: 0,
+                    Laundry: 0,
+                    CreditCardPaid: false,
+                    ElectricityPaid: false,
+                    WaterBillPaid: false,
+                    LaundryPaid: false,
+                    SIPPaid: false,
+                    RentPaid: false,
+                    SavingsGoal: this.settings.defaultSavingsGoal,
+                    HasSavingsGoal: false,
+                    CreditCardBalance: this.settings.defaultCreditLimit,
+                    CreditCardUsed: 0,
+                    PreviousMonthCredit: 0
                 };
                 this.budgets.push(monthBudget);
             }
@@ -2890,15 +3058,63 @@ class ExpenseTracker {
                     monthBudget.Electricity = amount;
                     monthBudget.ElectricityPaid = isPaid;
                     break;
-                // Other cases...
+                case 'Water Bill':
+                    monthBudget.WaterBill = amount;
+                    monthBudget.WaterBillPaid = isPaid;
+                    break;
+                case 'Laundry':
+                    monthBudget.Laundry = amount;
+                    monthBudget.LaundryPaid = isPaid;
+                    break;
+                case 'SIP':
+                    // Only update the amount if it's provided and non-zero
+                    if (amount > 0) {
+                        monthBudget.SIP = amount;
+                    }
+                    monthBudget.SIPPaid = isPaid;
+                    break;
+                case 'Rent':
+                    // Only update the amount if it's provided and non-zero
+                    if (amount > 0) {
+                        monthBudget.Rent = amount;
+                    }
+                    monthBudget.RentPaid = isPaid;
+                    break;
             }
             
-            await this.saveData();
+            // Save updated budget to MongoDB
+            const budgetData = { ...monthBudget };
+            
+            const response = await fetch(`${API_URL}/budgets`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(budgetData)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // Get the updated budget
+            const updatedBudget = await response.json();
+            
+            // Update local budget with MongoDB data
+            const index = this.budgets.findIndex(b => 
+                b.Month === month && b.Year === year
+            );
+            
+            if (index !== -1) {
+                this.budgets[index] = updatedBudget;
+            }
         } catch (error) {
             console.error('Error updating bill payment status:', error);
+            throw error;
         }
     }
-    
+
+// Helper method for toggling bill payment forms
     toggleBillPaymentForm(formId, isDisabled) {
         try {
             const formElement = document.getElementById(formId + 'Form');
@@ -2950,19 +3166,76 @@ class ExpenseTracker {
                 monthBudget = {
                     Month: this.currentMonth,
                     Year: this.currentYear,
-                    // Other default properties...
+                    TotalBudget: this.settings.defaultBudget,
+                    SIP: this.settings.defaultSIP,
+                    Rent: this.settings.defaultRent,
+                    CreditCard: 0,
+                    Electricity: 0,
+                    WaterBill: 0,
+                    Laundry: 0,
+                    CreditCardPaid: false,
+                    ElectricityPaid: false,
+                    WaterBillPaid: false,
+                    LaundryPaid: false,
+                    SIPPaid: false,
+                    RentPaid: false,
                     SavingsGoal: savingsAmount,
-                    HasSavingsGoal: setSavings
+                    HasSavingsGoal: setSavings,
+                    CreditCardBalance: this.settings.defaultCreditLimit,
+                    CreditCardUsed: 0,
+                    PreviousMonthCredit: 0,
+                    initialCashBalance: this.settings.defaultCashBalance,
+                    initialBankBalance: this.settings.defaultBankBalance
                 };
                 
                 this.budgets.push(monthBudget);
+                
+                // Send new budget to MongoDB
+                const response = await fetch(`${API_URL}/budgets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(monthBudget)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Get the saved budget with MongoDB _id
+                const savedBudget = await response.json();
+                
+                // Replace the local budget with the saved one
+                const index = this.budgets.findIndex(b => 
+                    b.Month === this.currentMonth && b.Year === this.currentYear
+                );
+                
+                if (index !== -1) {
+                    this.budgets[index] = savedBudget;
+                }
             } else {
                 // Update existing budget
                 monthBudget.SavingsGoal = savingsAmount;
                 monthBudget.HasSavingsGoal = setSavings;
+                
+                // Send updated budget to MongoDB
+                const budgetData = { ...monthBudget };
+                
+                // Use PATCH method to update only the modified fields
+                const response = await fetch(`${API_URL}/budgets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(budgetData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
             }
             
-            await this.saveData();
             this.showToast(`Savings goal ${setSavings ? 'set to ' + this.settings.currency + savingsAmount : 'removed'} for ${this.currentMonth}!`, 'success');
             
             // Update dashboard if visible
@@ -2974,15 +3247,22 @@ class ExpenseTracker {
             this.showToast('Error updating savings goal.', 'error');
         }
     }
+
     
     async updateBudget() {
         try {
             const monthInput = document.getElementById('budgetMonth');
             const yearInput = document.getElementById('budgetYear');
             const monthlyBudgetInput = document.getElementById('monthlyBudget');
-            // Other form elements...
+            const monthlySavingsGoalInput = document.getElementById('monthlySavingsGoal');
+            const creditCardLimitInput = document.getElementById('creditCardLimit');
+            const previousMonthCreditInput = document.getElementById('previousMonthCredit');
+            const initialCashBalanceInput = document.getElementById('initialCashBalance');
+            const initialBankBalanceInput = document.getElementById('initialBankBalance');
             
-            if (!monthInput || !yearInput || !monthlyBudgetInput) {
+            if (!monthInput || !yearInput || !monthlyBudgetInput || !creditCardLimitInput || 
+                !previousMonthCreditInput || !initialCashBalanceInput || !initialBankBalanceInput || 
+                !monthlySavingsGoalInput) {
                 this.showToast('Some budget form elements are missing.', 'error');
                 return;
             }
@@ -2996,39 +3276,111 @@ class ExpenseTracker {
             const month = monthInput.value;
             const year = parseInt(yearInput.value);
             
-            // Get values from form
             const initialCashBalance = parseFloat(initialCashBalanceInput.value) || 0;
             const initialBankBalance = parseFloat(initialBankBalanceInput.value) || 0;
-            // Other values...
+            
+            const monthlyBudget = parseFloat(monthlyBudgetInput.value) || (initialCashBalance + initialBankBalance);
+            const savingsGoal = parseFloat(monthlySavingsGoalInput.value) || this.settings.defaultSavingsGoal;
+            const creditCardLimit = parseFloat(creditCardLimitInput.value) || this.settings.defaultCreditLimit;
+            const previousMonthCredit = parseFloat(previousMonthCreditInput.value) || 0;
             
             // Update or add new budget entry
             let monthBudget = this.getMonthBudget(month, year);
             
             if (monthBudget) {
-                // Update existing budget properties
+                // Always set initialCashBalance and initialBankBalance
                 monthBudget.initialCashBalance = initialCashBalance;
                 monthBudget.initialBankBalance = initialBankBalance;
-                // Update other properties...
+                
+                // Update other budget properties
+                monthBudget.TotalBudget = monthlyBudget;
+                monthBudget.SavingsGoal = savingsGoal;
+                monthBudget.HasSavingsGoal = savingsGoal > 0;
+                monthBudget.CreditCardBalance = creditCardLimit;
+                monthBudget.PreviousMonthCredit = previousMonthCredit;
+                
+                // Send updated budget to MongoDB
+                const budgetData = { ...monthBudget };
+                
+                // If the budget has an _id from MongoDB, use it for the update
+                const response = await fetch(`${API_URL}/budgets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(budgetData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Get the updated budget
+                const updatedBudget = await response.json();
+                
+                // Update local budget with MongoDB data
+                const index = this.budgets.findIndex(b => 
+                    b.Month === month && b.Year === year
+                );
+                
+                if (index !== -1) {
+                    this.budgets[index] = updatedBudget;
+                }
             } else {
                 // Create new budget entry
                 monthBudget = {
                     Month: month,
                     Year: year,
                     TotalBudget: monthlyBudget,
-                    // Other properties...
+                    SIP: this.settings.defaultSIP,
+                    Rent: this.settings.defaultRent,
+                    CreditCard: 0,
+                    Electricity: 0,
+                    WaterBill: 0,
+                    Laundry: 0,
+                    CreditCardPaid: false,
+                    ElectricityPaid: false,
+                    WaterBillPaid: false,
+                    LaundryPaid: false,
+                    SIPPaid: false,
+                    RentPaid: false,
+                    SavingsGoal: savingsGoal,
+                    HasSavingsGoal: savingsGoal > 0,
+                    CreditCardBalance: creditCardLimit,
+                    CreditCardUsed: 0,
+                    PreviousMonthCredit: previousMonthCredit,
+                    initialCashBalance: initialCashBalance,
+                    initialBankBalance: initialBankBalance
                 };
                 
-                this.budgets.push(monthBudget);
+                // Send new budget to MongoDB
+                const response = await fetch(`${API_URL}/budgets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(monthBudget)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Get the saved budget with MongoDB _id
+                const savedBudget = await response.json();
+                
+                // Replace the new budget object with the one from MongoDB
+                this.budgets.push(savedBudget);
             }
             
-            await this.saveData();
             this.showToast(`Budget updated for ${month} ${year}!`, 'success');
             
-            // Update UI if needed
+            // Update dashboard if it's for the current month
             if (month === this.currentMonth && year === this.currentYear && this.currentPage === 'dashboard') {
                 this.updateDashboard();
             }
             
+            // Update budget history if on budget page
             if (this.currentPage === 'budget') {
                 this.updateBudgetHistory();
             }
