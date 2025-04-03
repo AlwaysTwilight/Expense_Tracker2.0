@@ -1755,17 +1755,32 @@ class ExpenseTracker {
         }
     }
 
-    async addExpenseToMongoDB(expense) {
+   async addExpenseToMongoDB(expense) {
         try {
+            // Get the authentication token
+            const token = this.authToken;
+            
+            if (!token) {
+                throw new Error('Authentication token not found. Please log in again.');
+            }
+            
             const response = await fetch(`${API_URL}/expenses`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`  // Add the authorization header
                 },
                 body: JSON.stringify(expense)
             });
             
             if (!response.ok) {
+                if (response.status === 401) {
+                    // Handle token expiration
+                    this.showToast('Your session has expired. Please log in again.', 'error');
+                    // Redirect to login page
+                    window.location.href = 'login.html';
+                    throw new Error('Authentication failed. Please log in again.');
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
