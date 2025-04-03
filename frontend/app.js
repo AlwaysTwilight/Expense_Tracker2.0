@@ -3100,14 +3100,11 @@ class ExpenseTracker {
                     break;
             }
             
-            // Save updated budget to MongoDB
+            // Save updated budget to MongoDB using fetchWithAuth instead of direct fetch
             const budgetData = { ...monthBudget };
             
-            const response = await fetch(`${API_URL}/budgets`, {
+            const response = await this.fetchWithAuth(`${API_URL}/budgets`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(budgetData)
             });
             
@@ -3317,15 +3314,12 @@ class ExpenseTracker {
                 monthBudget.CreditCardBalance = creditCardLimit;
                 monthBudget.PreviousMonthCredit = previousMonthCredit;
                 
-                // Send updated budget to MongoDB
+                // Send updated budget to MongoDB using fetchWithAuth
                 const budgetData = { ...monthBudget };
                 
                 // If the budget has an _id from MongoDB, use it for the update
-                const response = await fetch(`${API_URL}/budgets`, {
+                const response = await this.fetchWithAuth(`${API_URL}/budgets`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify(budgetData)
                 });
                 
@@ -3371,12 +3365,9 @@ class ExpenseTracker {
                     initialBankBalance: initialBankBalance
                 };
                 
-                // Send new budget to MongoDB
-                const response = await fetch(`${API_URL}/budgets`, {
+                // Send new budget to MongoDB using fetchWithAuth
+                const response = await this.fetchWithAuth(`${API_URL}/budgets`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify(monthBudget)
                 });
                 
