@@ -1458,22 +1458,22 @@
         const API_URL = 'https://expense-tracker2-0.onrender.com/api';
         
         // Check if the server is available (optional)
-        async function checkServerConnection() {
-          try {
-            const response = await fetch(`${API_URL}/settings`);
-            if (response.ok) {
-              console.log('Connected to expense tracker backend');
-              return true;
-            } else {
-              console.error('Backend server returned an error');
-              return false;
-            }
-          } catch (error) {
-            console.error('Could not connect to expense tracker backend:', error);
-            alert('Could not connect to the expense tracker backend server. Please ensure it is running.');
-            return false;
-          }
-        }
+        // async function checkServerConnection() {
+        //   try {
+        //     const response = await fetch(`${API_URL}/settings`);
+        //     if (response.ok) {
+        //       console.log('Connected to expense tracker backend');
+        //       return true;
+        //     } else {
+        //       console.error('Backend server returned an error');
+        //       return false;
+        //     }
+        //   } catch (error) {
+        //     console.error('Could not connect to expense tracker backend:', error);
+        //     alert('Could not connect to the expense tracker backend server. Please ensure it is running.');
+        //     return false;
+        //   }
+        // }
         
         // You can call this when the page loads to verify connection
         document.addEventListener('DOMContentLoaded', checkServerConnection);
