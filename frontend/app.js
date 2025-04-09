@@ -1331,7 +1331,7 @@ class ExpenseTracker {
                 confirmDeleteBtn.addEventListener('click', () => {
                     const expenseId = confirmDeleteBtn.getAttribute('data-expense-id');
                     if (expenseId) {
-                        this.deleteExpense(parseInt(expenseId));
+                        this.(parseInt(expenseId));
                         
                         // Close modal
                         const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
@@ -5430,39 +5430,56 @@ class ExpenseTracker {
     }
     
     async deleteExpense(index) {
-        try {
-          const expense = this.expenses[index];
-          
-          if (!expense || !expense._id) {
-            throw new Error('Invalid expense');
-          }
-          
-          // Delete from database
-          const response = await this.fetchWithAuth(`${API_URL}/expenses/${expense._id}`, {
-            method: 'DELETE'
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          // Delete from local array
-          this.expenses.splice(index, 1);
-          
-          this.showToast('Expense deleted successfully!', 'success');
-          
-          // Update UI
-          this.updateExpensesTable();
-          if (this.currentPage === 'dashboard') {
-            this.updateDashboard();
-          } else if (this.currentPage === 'analysis') {
-            this.updateAnalysisPage();
-          }
-        } catch (error) {
-          console.error('Error deleting expense:', error);
-          this.showToast('Error deleting expense.', 'error');
+      try {
+        const expense = this.expenses[index];
+        
+        if (!expense || !expense._id) {
+          throw new Error('Invalid expense');
         }
+        
+        // Check if this is a credit card expense before deleting
+        const isCredit = expense.PaymentMethod === 'Credit Card';
+        const month = expense.Month;
+        const year = expense.Year;
+        const amount = expense.Amount;
+        
+        // Delete from database
+        const response = await this.fetchWithAuth(`${API_URL}/expenses/${expense._id}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // If it was a credit card expense, update the budget to reduce credit card usage
+        if (isCredit) {
+          const monthBudget = this.getMonthBudget(month, year);
+          if (monthBudget) {
+            // Subtract the expense amount from the credit card usage
+            monthBudget.CreditCardUsed = Math.max(0, (monthBudget.CreditCardUsed || 0) - amount);
+            // Save the updated budget
+            await this.saveData();
+          }
+        }
+        
+        // Delete from local array
+        this.expenses.splice(index, 1);
+        
+        this.showToast('Expense deleted successfully!', 'success');
+        
+        // Update UI
+        this.updateExpensesTable();
+        if (this.currentPage === 'dashboard') {
+          this.updateDashboard();
+        } else if (this.currentPage === 'analysis') {
+          this.updateAnalysisPage();
+        }
+      } catch (error) {
+        console.error('Error deleting expense:', error);
+        this.showToast('Error deleting expense.', 'error');
       }
+    }
     
     // Helper functions
     calculateFoodTotal() {
