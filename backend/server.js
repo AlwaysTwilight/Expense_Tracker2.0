@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://expense-tracker2-0-1.onrender.com', 'http://localhost:3000'], 
+  credentials: true
+}));
 app.use(bodyParser.json({ limit: '10mb' }));
 
 // Authentication middleware
