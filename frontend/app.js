@@ -1331,7 +1331,7 @@ class ExpenseTracker {
                 confirmDeleteBtn.addEventListener('click', () => {
                     const expenseId = confirmDeleteBtn.getAttribute('data-expense-id');
                     if (expenseId) {
-                        this.(parseInt(expenseId));
+                        this.deleteExpense(parseInt(expenseId));  // FIX HERE: Added method name 'deleteExpense'
                         
                         // Close modal
                         const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
@@ -1341,7 +1341,7 @@ class ExpenseTracker {
                     }
                 });
             }
-            
+                        
             // Settings page events
             const saveDefaultsBtn = document.getElementById('saveDefaultsBtn');
             if (saveDefaultsBtn) {
