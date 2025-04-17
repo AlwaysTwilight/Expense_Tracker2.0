@@ -1443,7 +1443,13 @@
             </div>
         </div>
     </div>
-    
+    <script>
+      console.log("Checking for authentication token...");
+      if (!(localStorage.getItem('token') || sessionStorage.getItem('token'))) {
+        console.log("No token found, redirecting to login");
+        window.location.replace('login.html');
+      }
+    </script>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <!-- Chart.js -->
